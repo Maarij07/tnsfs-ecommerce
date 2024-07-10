@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { auth } from '../lib/firebase';
 import db from '../lib/firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, setDoc } from "firebase/firestore";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-
+import backgroundImage from '../assets/bg signup.svg';
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -56,9 +56,9 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-100">
+    <div className="min-h-screen flex items-center justify-between bg-zinc-300">
       <ToastContainer />
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xl">
+      <div className="bg-zinc-200 p-8 rounded-lg shadow-lg w-full max-w-2xl">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
         {error.general && <p className="text-red-500 text-center mb-4">{error.general}</p>}
         <form onSubmit={handleSignup} className="space-y-4">
@@ -109,7 +109,7 @@ const Signup = () => {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                <span className='mt-[5vh]'>{showPassword ? <FaEyeSlash /> : <FaEye />}</span>
               </div>
               {error.password && <p className="text-red-500 text-sm mt-1">{error.password}</p>}
             </div>
@@ -129,41 +129,46 @@ const Signup = () => {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                <span className='mt-[5vh]'>{showConfirmPassword ? <FaEyeSlash /> : <FaEye />}</span>
               </div>
               {error.confirmPassword && <p className="text-red-500 text-sm mt-1">{error.confirmPassword}</p>}
             </div>
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
-              Role
-            </label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className={`w-full px-3 py-2 border-b ${error.role ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
-            >
-              <option value="">Select Role</option>
-              <option value="customer">Customer</option>
-              <option value="vendor">Vendor</option>
-            </select>
-            {error.role && <p className="text-red-500 text-sm mt-1">{error.role}</p>}
+            <div className='flex w-full justify-between '>
+              <div className="w-1/2">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
+                  Role
+                </label>
+                <select
+                  id="role"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className={`w-[23.2vw] flex px-3 py-2 border-b ${error.role ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
+                >
+                  <option value="">Select Role</option>
+                  <option value="customer">Customer</option>
+                  <option value="vendor">Vendor</option>
+                </select>
+                {error.role && <p className="text-red-500 text-sm mt-1">{error.role}</p>}
+              </div>
+              <div className="w-1/2">
+                <label className="block text-gray-700  text-sm font-bold mb-2" htmlFor="mobile">
+                  Mobile Number
+                </label>
+                <PhoneInput
+                  country={'us'}
+                  value={mobile}
+                  onChange={setMobile}
+                  inputClass={`w-[34vw] px-3 py-2 border-b ${error.mobile ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
+                  buttonClass="border-b border-gray-300 focus:outline-none focus:border-blue-500"
+                  dropdownClass="border-b border-gray-300 focus:outline-none focus:border-blue-500"
+                />
+                {error.mobile && <p className="text-red-500 text-sm mt-1">{error.mobile}</p>}
+              </div>
+            </div>
           </div>
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="mobile">
-              Mobile Number
-            </label>
-            <PhoneInput
-              country={'us'}
-              value={mobile}
-              onChange={setMobile}
-              inputClass={`w-full px-3 py-2 border-b ${error.mobile ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
-              buttonClass="border-b border-gray-300 focus:outline-none focus:border-blue-500"
-              dropdownClass="border-b border-gray-300 focus:outline-none focus:border-blue-500"
-            />
-            {error.mobile && <p className="text-red-500 text-sm mt-1">{error.mobile}</p>}
-          </div>
+
           <div className="flex items-center justify-between">
             <button
               type="submit"
@@ -173,9 +178,14 @@ const Signup = () => {
             </button>
             <p>Already have an account? <Link to='/' className="text-blue-500 hover:underline">Login</Link></p>
           </div>
-        </form>
-      </div>
+        </form> </div>
+
+      <img src={backgroundImage} className='h-screen bg-green-500' alt="" />
+
+
     </div>
+
+
   );
 };
 

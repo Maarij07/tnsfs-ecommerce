@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate instead of
 import { useLocalContext } from '../context/context';
 import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-
+import backgroundImage from '../assets/bg signup.svg'; 
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -51,11 +51,10 @@ const Signin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-100">
-      <ToastContainer />
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-between">
+      <div className="w-[40vw] bg-white p-8 mx-auto rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        {error && <p className="text-red-.com/500500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSignin}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -100,6 +99,7 @@ const Signin = () => {
           </div>
         </form>
       </div>
+      <img src={backgroundImage} className='h-screen bg-green-500' alt="" />
     </div>
   );
 };

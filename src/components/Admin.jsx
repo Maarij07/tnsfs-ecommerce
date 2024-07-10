@@ -78,7 +78,7 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-ebebeb p-4 flex justify-between items-center">
+      <header className="bg-ebebeb py-4 px-8 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Admin Panel</h1>
         <button
           onClick={handleLogout}

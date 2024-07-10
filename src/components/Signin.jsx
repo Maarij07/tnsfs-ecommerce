@@ -3,6 +3,7 @@ import { auth } from '../lib/firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate instead of useHistory
 import { useLocalContext } from '../context/context';
 import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -13,6 +14,7 @@ const Signin = () => {
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const { setLoggedInUser } = useLocalContext();
+  const navigate = useNavigate(); // Use useNavigate for navigation in React Router v6
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -20,11 +22,32 @@ const Signin = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       setLoggedInUser(user);
+
+      // Check user role from Firestore
+      // Replace 'email' with the appropriate user identifier (e.g., UID) if necessary
+      const userData = await getUserData(email); // Assuming a function to fetch user data from Firestore
+
+      if (userData && userData.role === 'admin') {
+        navigate('/admin'); // Redirect to Admin component if user is admin
+      } else {
+        navigate('/home'); // Redirect to Home component for other users
+      }
+
       toast.success('Signed in successfully!');
     } catch (error) {
       setError(error.message);
       toast.error('Failed to sign in!');
     }
+  };
+
+  // Function to fetch user data from Firestore
+  const getUserData = async (email) => {
+    // Implement your logic to fetch user data from Firestore
+    // Example:
+    // const userRef = db.collection('users').doc(email);
+    // const doc = await userRef.get();
+    // return doc.data();
+    return null; // Replace with actual implementation
   };
 
   return (

@@ -56,7 +56,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-between bg-zinc-300">
+    <div className="min-h-screen flex items-center justify-center sm:justify-between bg-zinc-300">
       <ToastContainer />
       <div className="bg-zinc-200 p-8 rounded-lg shadow-lg w-full max-w-2xl">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
@@ -136,7 +136,7 @@ const Signup = () => {
           </div>
           <div>
             <div className='flex w-full justify-between '>
-              <div className="w-1/2">
+              <div className=" w-full sm:w-1/2">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
                   Role
                 </label>
@@ -169,18 +169,18 @@ const Signup = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center  sm:justify-between">
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
             >
               Sign Up
             </button>
-            <p>Already have an account? <Link to='/' className="text-blue-500 hover:underline">Login</Link></p>
+            <p>Already have an account? <Link to='/' className="text-blue-500 hover:underline ">Login</Link></p>
           </div>
         </form> </div>
 
-      <img src={backgroundImage} className='h-screen bg-green-500' alt="" />
+      <img src={backgroundImage} className='h-screen hidden sm:block' alt="" />
 
 
     </div>

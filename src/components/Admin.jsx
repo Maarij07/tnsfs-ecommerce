@@ -4,6 +4,7 @@ import { FaSignOutAlt, FaTachometerAlt, FaUsers, FaStore, FaThList, FaTrophy, Fa
 import AdminCustomers from './AdminCustomers';
 import AdminVendors from './AdminVendors';
 import AdminCategories from './AdminCategories';
+<<<<<<< HEAD
 
 
 
@@ -11,6 +12,11 @@ import AdminDashboard from './AdminDashboard';
 import AdminTopSellers from './AdminTopSellers';
 import AdminTopSellingProducts from './AdminTopSellingProducts';
 
+=======
+import AdminDashboard from './AdminDashboard';
+import AdminTopSellers from './AdminTopSellers';
+import AdminTopSellingProducts from './AdminTopSellingProducts';
+>>>>>>> 1601b8f70a286c6bf0ffccf23cafbb5cf141341c
 import db, { auth } from '../lib/firebase'; // adjust the import path as needed
 import { useLocalContext } from '../context/context';
 import { signOut } from 'firebase/auth';
@@ -31,7 +37,7 @@ const Admin = () => {
       const querySnapshot = await getDocs(collection(db, 'users'));
       const usersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setCustomers(usersList.filter(user => user.role === 'customer'));
-      setVendors(usersList.filter(user => user.role === 'vendor'));
+      setVendors(usersList.filter(user => user.role === 'seller'));
     } catch (error) {
       console.error('Error fetching users: ', error);
     }

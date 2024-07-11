@@ -6,10 +6,9 @@ import { doc, setDoc } from "firebase/firestore";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import backgroundImage from '../assets/bg signup.svg';
+
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -25,27 +24,30 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     const newError = {};
-
+  
     if (!username) newError.username = "Username is required";
     if (!email) newError.email = "Email is required";
     if (!password) newError.password = "Password is required";
     if (!confirmPassword) newError.confirmPassword = "Confirm Password is required";
     if (!role) newError.role = "Role is required";
     if (!mobile) newError.mobile = "Mobile number is required";
+    if (!/^\d{10}$/.test(mobile)) newError.mobile = "Mobile number must be 10 digits long";
     if (password !== confirmPassword) newError.confirmPassword = "Passwords do not match";
-
+  
     setError(newError);
-
+  
     if (Object.keys(newError).length > 0) return;
-
+  
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      // Add '0' before the mobile number
+      const formattedMobile = `0${mobile}`;
       await setDoc(doc(db, "users", user.email), {
         username,
         email: user.email,
         role,
-        mobile,
+        mobile: formattedMobile,
       });
       toast.success('Account created successfully!');
       navigate('/');
@@ -54,6 +56,7 @@ const Signup = () => {
       setError({ general: error.message });
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center sm:justify-between bg-zinc-300">
@@ -135,8 +138,8 @@ const Signup = () => {
             </div>
           </div>
           <div>
-            <div className='flex w-full justify-between '>
-              <div className=" w-full sm:w-1/2">
+            <div className='flex w-full justify-between'>
+              <div className="w-1/2">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
                   Role
                 </label>
@@ -144,26 +147,34 @@ const Signup = () => {
                   id="role"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className={`w-[23.2vw] flex px-3 py-2 border-b ${error.role ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
+                  className={`w-[21.6vw] flex px-3 py-2 border-b ${error.role ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
                 >
                   <option value="">Select Role</option>
                   <option value="customer">Customer</option>
-                  <option value="vendor">Vendor</option>
+                  <option value="seller">Seller</option>
                 </select>
                 {error.role && <p className="text-red-500 text-sm mt-1">{error.role}</p>}
               </div>
-              <div className="w-1/2">
-                <label className="block text-gray-700  text-sm font-bold mb-2" htmlFor="mobile">
+              <div className="w-[21.6vw]">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="mobile">
                   Mobile Number
                 </label>
-                <PhoneInput
-                  country={'us'}
-                  value={mobile}
-                  onChange={setMobile}
-                  inputClass={`w-[34vw] px-3 py-2 border-b ${error.mobile ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
-                  buttonClass="border-b border-gray-300 focus:outline-none focus:border-blue-500"
-                  dropdownClass="border-b border-gray-300 focus:outline-none focus:border-blue-500"
-                />
+                <div className="flex items-center">
+                  <div className="flex items-center bg-white border-b border-gray-300 px-2 py-2 text-gray-700">
+                    +92
+                  </div>
+                  <input
+                    id="mobile"
+                    type="text"
+                    value={mobile}
+                    onChange={(e) => {
+                      const inputMobile = e.target.value.replace(/\D/g, ''); // Remove any non-digit characters
+                      setMobile(inputMobile);
+                    }}
+                    placeholder="Enter your mobile number"
+                    className={`flex-grow px-3 py-2 border-b ${error.mobile ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
+                  />
+                </div>
                 {error.mobile && <p className="text-red-500 text-sm mt-1">{error.mobile}</p>}
               </div>
             </div>
@@ -178,14 +189,13 @@ const Signup = () => {
             </button>
             <p>Already have an account? <Link to='/' className="text-blue-500 hover:underline ">Login</Link></p>
           </div>
-        </form> </div>
+        </form>
+      </div>
 
-      <img src={backgroundImage} className='h-screen hidden sm:block' alt="" />
+      <img src={backgroundImage} className='h-screen bg-green-500' alt="" />
 
 
     </div>
-
-
   );
 };
 

@@ -19,7 +19,7 @@ const AdminDashboard = () => {
       const usersList = usersSnapshot.docs.map(doc => doc.data());
 
       const customersCount = usersList.filter(user => user.role === 'customer').length;
-      const vendorsCount = usersList.filter(user => user.role === 'vendor').length;
+      const vendorsCount = usersList.filter(user => user.role === 'seller').length;
 
       const categoriesSnapshot = await getDocs(collection(db, 'categories'));
       const categoriesCount = categoriesSnapshot.docs.length;
@@ -61,7 +61,7 @@ const AdminDashboard = () => {
           <div className="flex items-center">
             <FaStore className="text-4xl text-green-500 mr-4" />
             <div>
-              <p className="text-lg font-bold">Total Vendors</p>
+              <p className="text-lg font-bold">Total Sellers</p>
               <p className="text-2xl">{totalVendors}</p>
             </div>
           </div>

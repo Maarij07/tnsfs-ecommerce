@@ -4,19 +4,9 @@ import { FaUserCircle, FaTachometerAlt, FaUsers, FaStore, FaThList, FaTrophy, Fa
 import AdminCustomers from './AdminCustomers';
 import AdminVendors from './AdminVendors';
 import AdminCategories from './AdminCategories';
-<<<<<<< HEAD
-
-
-
 import AdminDashboard from './AdminDashboard';
 import AdminTopSellers from './AdminTopSellers';
 import AdminTopSellingProducts from './AdminTopSellingProducts';
-
-=======
-import AdminDashboard from './AdminDashboard';
-import AdminTopSellers from './AdminTopSellers';
-import AdminTopSellingProducts from './AdminTopSellingProducts';
->>>>>>> 1601b8f70a286c6bf0ffccf23cafbb5cf141341c
 import db, { auth } from '../lib/firebase'; // adjust the import path as needed
 import { useLocalContext } from '../context/context';
 import { signOut } from 'firebase/auth';

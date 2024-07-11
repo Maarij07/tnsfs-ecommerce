@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
-import { auth } from '../lib/firebase';
+import db, { auth } from '../lib/firebase'; // Adjust the import path as needed
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate instead of useHistory
+import { useNavigate } from 'react-router-dom';
 import { useLocalContext } from '../context/context';
 import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import backgroundImage from '../assets/bg signup.svg'; 
+
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const { setLoggedInUser } = useLocalContext();
-  const navigate = useNavigate(); // Use useNavigate for navigation in React Router v6
+  const { setLoggedInUser, setUserRole } = useLocalContext();
+  const [error, setError] = useState(null);
+  const navigate = useNavigate(); 
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -23,14 +25,17 @@ const Signin = () => {
       const user = userCredential.user;
       setLoggedInUser(user);
 
-      // Check user role from Firestore
-      // Replace 'email' with the appropriate user identifier (e.g., UID) if necessary
-      const userData = await getUserData(email); // Assuming a function to fetch user data from Firestore
+      const userData = await getUserData(email); 
 
-      if (userData && userData.role === 'admin') {
-        navigate('/admin'); // Redirect to Admin component if user is admin
+      if (userData) {
+        setUserRole(userData.role); // Set the user role in context
+        if (userData.role === 'admin') {
+          navigate('/admin'); 
+        } else {
+          navigate('/home');
+        }
       } else {
-        navigate('/home'); // Redirect to Home component for other users
+        toast.error('User role not found!');
       }
 
       toast.success('Signed in successfully!');
@@ -42,19 +47,25 @@ const Signin = () => {
 
   // Function to fetch user data from Firestore
   const getUserData = async (email) => {
-    // Implement your logic to fetch user data from Firestore
-    // Example:
-    // const userRef = db.collection('users').doc(email);
-    // const doc = await userRef.get();
-    // return doc.data();
-    return null; // Replace with actual implementation
+    try {
+      const q = query(collection(db, 'users'), where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        return querySnapshot.docs[0].data();
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching user data: ', error);
+      return null;
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center  bg-zinc-300 justify-between">
       <div className="w-[40vw] bg-zinc-200 p-8 mx-auto rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
-        {error && <p className="text-red-.com/500500 text-center mb-4">{error}</p>}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSignin}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">

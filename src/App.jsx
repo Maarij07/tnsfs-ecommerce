@@ -7,16 +7,16 @@ import { useLocalContext } from "./context/context";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {
-  const { loggedInUser } = useLocalContext();
+  const { loggedInUser, userRole } = useLocalContext();
 
   return (
     <Router>
       <Routes>
         {loggedInUser ? (
-          loggedInUser.email === "arsal@gmail.com" ? (
-            <Route path="/" element={<Admin />} />
+          userRole === 'admin' ? (
+            <Route path="/admin" element={<Admin />} />
           ) : (
-            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
           )
         ) : (
           <>
@@ -25,7 +25,7 @@ function App() {
           </>
         )}
         {/* Redirect to home or admin if route does not exist */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to={loggedInUser ? (userRole === 'admin' ? "/admin" : "/home") : "/"} />} />
       </Routes>
     </Router>
   );

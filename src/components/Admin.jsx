@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { FaSignOutAlt, FaTachometerAlt, FaUsers, FaStore, FaThList } from 'react-icons/fa';
+import { FaSignOutAlt, FaTachometerAlt, FaUsers, FaStore, FaThList, FaTrophy, FaShoppingCart } from 'react-icons/fa';
 import AdminCustomers from './AdminCustomers';
 import AdminVendors from './AdminVendors';
 import AdminCategories from './AdminCategories';
+<<<<<<< HEAD
 import AdminDashboard from './AdminDashboard'; // Import the AdminDashboard component
+=======
+import AdminDashboard from './AdminDashboard';
+import AdminTopSellers from './AdminTopSellers';
+import AdminTopSellingProducts from './AdminTopSellingProducts';
+>>>>>>> 5b9d025f229989ce1a8677ccb451e210e45917f1
 import db, { auth } from '../lib/firebase'; // adjust the import path as needed
 import { useLocalContext } from '../context/context';
 import { signOut } from 'firebase/auth';
@@ -13,8 +19,8 @@ const Admin = () => {
   const { loggedInUser, setLoggedInUser } = useLocalContext();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [customers, setCustomers] = useState([]);
-  const [vendors, setVendors] = useState([]);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [vendors, setVendors] = useState([]);
 
   useEffect(() => {
     fetchUsers();
@@ -64,13 +70,17 @@ const Admin = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <AdminDashboard />; // Render the AdminDashboard component
+        return <AdminDashboard />;
       case 'categories':
         return <AdminCategories />;
       case 'customers':
         return <AdminCustomers customers={customers} handleDelete={handleDelete} />;
-      case 'vendors':
+      case 'sellers':
         return <AdminVendors vendors={vendors} handleDelete={handleDelete} />;
+      case 'topSellers':
+        return <AdminTopSellers />;
+      case 'topSellingProducts':
+        return <AdminTopSellingProducts />;
       default:
         return null;
     }
@@ -78,7 +88,7 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-ebebeb py-4 px-8 flex justify-between items-center">
+      <header className="py-4 px-8 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Admin Panel</h1>
         <button
           onClick={handleLogout}
@@ -114,11 +124,25 @@ const Admin = () => {
                 Customers
               </li>
               <li
-                className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'vendors' ? 'bg-gray-300' : ''}`}
-                onClick={() => setActiveTab('vendors')}
+                className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'sellers' ? 'bg-gray-300' : ''}`}
+                onClick={() => setActiveTab('sellers')}
               >
                 <FaStore className="mr-2" />
-                Vendors
+                Sellers
+              </li>
+              <li
+                className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'topSellers' ? 'bg-gray-300' : ''}`}
+                onClick={() => setActiveTab('topSellers')}
+              >
+                <FaTrophy className="mr-2" />
+                Top Sellers
+              </li>
+              <li
+                className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'topSellingProducts' ? 'bg-gray-300' : ''}`}
+                onClick={() => setActiveTab('topSellingProducts')}
+              >
+                <FaShoppingCart className="mr-2" />
+                Top Selling Products
               </li>
             </ul>
           </nav>

@@ -1,18 +1,17 @@
-import { createContext, useState,useContext,useEffect } from "react";
-import {auth,provider } from '../lib/firebase';
+// context.js or similar file
+import React, { createContext, useContext, useState } from "react";
 
-const AddContext = createContext();
+const LocalContext = createContext();
 
-export function useLocalContext(){
-    return useContext(AddContext);
-}
-export function ContextProvider({children}){
-    const [loggedInUser,setLoggedInUser] = useState(null);    
+export const useLocalContext = () => useContext(LocalContext);
 
-    const value = { 
-        loggedInUser,
-        setLoggedInUser,
-     };
+export const LocalProvider = ({ children }) => {
+  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [userRole, setUserRole] = useState(null); // New state for user role
 
-    return <AddContext.Provider value={value} >{children}</AddContext.Provider>;
-}
+  return (
+    <LocalContext.Provider value={{ loggedInUser, setLoggedInUser, userRole, setUserRole }}>
+      {children}
+    </LocalContext.Provider>
+  );
+};

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { FaSignOutAlt, FaTachometerAlt, FaUsers, FaStore, FaThList, FaTrophy, FaShoppingCart } from 'react-icons/fa';
+import { FaUserCircle, FaTachometerAlt, FaUsers, FaStore, FaThList, FaTrophy, FaShoppingCart, FaLock, FaSignOutAlt } from 'react-icons/fa';
 import AdminCustomers from './AdminCustomers';
 import AdminVendors from './AdminVendors';
 import AdminCategories from './AdminCategories';
@@ -17,6 +17,7 @@ const Admin = () => {
   const [customers, setCustomers] = useState([]);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [vendors, setVendors] = useState([]);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -63,6 +64,15 @@ const Admin = () => {
     console.log('Logout cancelled.');
   };
 
+  const toggleProfileMenu = () => {
+    setShowProfileMenu(!showProfileMenu);
+  };
+
+  const handleLogoutProfileOption = () => {
+    setShowProfileMenu(false);
+    handleLogout();
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -86,13 +96,30 @@ const Admin = () => {
     <div className="min-h-screen flex flex-col">
       <header className="py-4 px-8 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Admin Panel</h1>
-        <button
-          onClick={handleLogout}
-          className="text-red-500 hover:text-red-700 flex items-center"
-        >
-          <FaSignOutAlt className="mr-2" />
-          Logout
-        </button>
+        <div className="relative">
+          <FaUserCircle
+            className="text-3xl cursor-pointer text-gray-600 hover:text-gray-800"
+            onClick={toggleProfileMenu}
+          />
+          {showProfileMenu && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
+              <button
+                onClick={() => {} /* Add functionality for changing password here */}
+                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+              >
+                <FaLock className="mr-2" />
+                Change Password
+              </button>
+              <button
+                onClick={handleLogoutProfileOption}
+                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+              >
+                <FaSignOutAlt className="mr-2" />
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </header>
       <div className="flex flex-1">
         <aside className="w-64 bg-ebebeb text-black p-6">

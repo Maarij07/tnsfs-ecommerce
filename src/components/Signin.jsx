@@ -31,7 +31,10 @@ const Signin = () => {
         setUserRole(userData.role); // Set the user role in context
         if (userData.role === 'admin') {
           navigate('/admin'); 
-        } else {
+        }else if(userData.role === 'seller'){
+          navigate('/seller')
+        }   
+        else {
           navigate('/home');
         }
       } else {

@@ -8,7 +8,7 @@ import SellerTopSellingProducts from './SellerTopSellingProducts';
 import { useLocalContext } from '../context/context';
 import { signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import db, {auth } from '../lib/firebase'; // Adjust import path as needed
+import db, { auth } from '../lib/firebase' // Adjust import path as needed
 
 const Seller = () => {
   const { loggedInUser, setLoggedInUser } = useLocalContext();
@@ -30,7 +30,6 @@ const Seller = () => {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setUserDetails(docSnap.data());
-        console.log(userDetails)
       } else {
         console.log('No such document!');
       }
@@ -58,17 +57,37 @@ const Seller = () => {
     console.log('Logout cancelled.');
   };
 
+  const handleCompleteProfile = () => {
+    // Implement logic for completing the profile
+    console.log('Complete Profile clicked');
+  };
+
+  const handleChangePassword = () => {
+    // Implement logic for changing password
+    console.log('Change Password clicked');
+  };
+
   const handleProfileMenuClick = (e) => {
-    if (e.key === 'logout') {
-      handleLogout();
+    switch (e.key) {
+      case 'completeProfile':
+        handleCompleteProfile();
+        break;
+      case 'changePassword':
+        handleChangePassword();
+        break;
+      case 'logout':
+        handleLogout();
+        break;
+      default:
+        break;
     }
-    // Add more actions based on menu items here
   };
 
   const profileMenu = (
-    <div>
-      <Button onClick={() => console.log('Complete Profile clicked')}>Complete Profile</Button>
-      <Button onClick={() => handleLogout()} className="mt-2" type="danger">Logout</Button>
+    <div className="flex flex-col gap-2">
+      <Button onClick={handleCompleteProfile}>Complete Profile</Button>
+      <Button onClick={handleChangePassword}>Change Password</Button>
+      <Button onClick={handleLogout} type="danger">Logout</Button>
     </div>
   );
 
@@ -91,7 +110,7 @@ const Seller = () => {
     <div className="min-h-screen flex flex-col">
       <header className="py-4 px-8 flex justify-between items-center bg-white shadow-md fixed top-0 left-0 right-0 z-10">
         <h1 className="text-2xl font-bold">Seller Dashboard</h1>
-        <Popover content={profileMenu} title={`Hello, ${userDetails?.username || 'Seller'}`}>
+        <Popover content={profileMenu} title={`Hello, ${userDetails?.displayName || 'Seller'}`}>
           <FaUserCircle className="text-3xl cursor-pointer text-gray-500 hover:text-gray-700" />
         </Popover>
       </header>

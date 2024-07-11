@@ -5,7 +5,7 @@ import AdminCustomers from './AdminCustomers';
 import AdminVendors from './AdminVendors';
 import AdminCategories from './AdminCategories';
 import AdminDashboard from './AdminDashboard'; // Import the AdminDashboard component
-import db from '../lib/firebase'; // adjust the import path as needed
+import db, { auth } from '../lib/firebase'; // adjust the import path as needed
 import { useLocalContext } from '../context/context';
 import { signOut } from 'firebase/auth';
 

@@ -51,8 +51,8 @@ const Signin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-between">
-      <div className="w-[40vw] bg-white p-8 mx-auto rounded-lg shadow-lg">
+    <div className="min-h-screen flex items-center  bg-zinc-300 justify-between">
+      <div className="w-[40vw] bg-zinc-200 p-8 mx-auto rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
         {error && <p className="text-red-.com/500500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSignin}>
@@ -85,7 +85,7 @@ const Signin = () => {
               className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+              <span className='mt-[5vh]'>{showPassword ? <FaEyeSlash /> : <FaEye />}</span>
             </div>
           </div>
           <div className="flex items-center justify-between">

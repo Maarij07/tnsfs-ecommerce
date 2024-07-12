@@ -8,7 +8,10 @@ import { useNavigate } from 'react-router-dom';
 import { useLocalContext } from '../context/context';
 import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import backgroundImage from '../assets/bg signup.svg'; 
+import { Button, Form, Input, Typography } from 'antd';
+import backgroundImage from '../assets/bg signup.svg';
+
+const { Title, Text } = Typography;
 
 const Signin = () => {
   const [email, setEmail] = useState('');
@@ -16,25 +19,23 @@ const Signin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { setLoggedInUser, setUserRole } = useLocalContext();
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
-  const handleSignin = async (e) => {
-    e.preventDefault();
+  const handleSignin = async (values) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
       setLoggedInUser(user);
 
-      const userData = await getUserData(email); 
+      const userData = await getUserData(values.email);
 
       if (userData) {
         setUserRole(userData.role); // Set the user role in context
         if (userData.role === 'admin') {
-          navigate('/admin'); 
-        }else if(userData.role === 'seller'){
-          navigate('/seller')
-        }   
-        else {
+          navigate('/admin');
+        } else if (userData.role === 'seller') {
+          navigate('/seller');
+        } else {
           navigate('/home');
         }
       } else {
@@ -67,53 +68,54 @@ const Signin = () => {
   return (
     <div className="min-h-screen flex items-center justify-between bg-white">
       <div className="w-auto sm:w-[40vw] sm:mx-auto bg-white p-8 mx-auto rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign In</h2>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <form onSubmit={handleSignin}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-              Email
-            </label>
-            <input
-              id="email"
+        <Title level={2} className="text-center text-gray-800">Sign In</Title>
+        {error && <Text type="danger" className="text-center mb-4">{error}</Text>}
+        <Form
+          layout="vertical"
+          onFinish={handleSignin}
+          initialValues={{ email: '', password: '' }}
+        >
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: 'Please enter your email' }]}
+          >
+            <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
-              className="w-full px-3 py-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
+              className="border-b-2 border-gray-300 focus:border-blue-500"
+              style={{ border: 'none', borderBottom: '1px solid #d9d9d9' }}
             />
-          </div>
-          <div className="mb-6 relative">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-              Password
-            </label>
-            <input
-              id="password"
+          </Form.Item>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: 'Please enter your password' }]}
+          >
+            <Input.Password
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full px-3 py-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
+              className="border-b-2 border-gray-300 focus:border-blue-500"
+              style={{ border: 'none', borderBottom: '1px solid #d9d9d9' }}
+              iconRender={visible => (visible ? <FaEyeSlash /> : <FaEye />)}
             />
-            <div
-              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              <span className='mt-[5vh]'>{showPassword ? <FaEyeSlash /> : <FaEye />}</span>
-            </div>
-          </div>
-          <div className="flex justify-between items-center">
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-            >
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
               Sign In
-            </button>
-            <p>Don't have an account? <Link to='/signup' className="text-blue-500 hover:underline">Signup</Link></p>
-          </div>
-        </form>
+            </Button>
+          </Form.Item>
+        </Form>
+        <div className="flex justify-between items-center">
+          <Text>Don't have an account? <Link to='/signup' className="text-blue-500 hover:underline">Signup</Link></Text>
+        </div>
       </div>
       <img src={backgroundImage} className='h-screen hidden sm:block' alt="" />
+      <ToastContainer />
     </div>
   );
 };

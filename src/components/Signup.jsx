@@ -8,31 +8,28 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import backgroundImage from '../assets/bg signup.svg';
+import { Form, Input, Button, Select, Typography, Tooltip, Modal } from 'antd';
+
+const { Title, Text } = Typography;
+const { Option } = Select;
 
 const Signup = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [error, setError] = useState({});
+  const [form] = Form.useForm();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState({});
+  const [role, setRole] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [formValues, setFormValues] = useState({});
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
+  const handleSignup = async () => {
+    const { username, email, password, confirmPassword, role, mobile } = formValues;
     const newError = {};
 
-    if (!username) newError.username = "Username is required";
-    if (!email) newError.email = "Email is required";
-    if (!password) newError.password = "Password is required";
-    if (!confirmPassword) newError.confirmPassword = "Confirm Password is required";
-    if (!role) newError.role = "Role is required";
-    if (!mobile) newError.mobile = "Mobile number is required";
-    if (!/^\d{10}$/.test(mobile)) newError.mobile = "Mobile number must be 10 digits long";
-    if (password !== confirmPassword) newError.confirmPassword = "Passwords do not match";
+    if (password !== confirmPassword) {
+      newError.confirmPassword = "Passwords do not match";
+    }
 
     setError(newError);
 
@@ -41,7 +38,6 @@ const Signup = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      // Add '0' before the mobile number
       const formattedMobile = `0${mobile}`;
       await setDoc(doc(db, "users", user.email), {
         username,
@@ -57,141 +53,158 @@ const Signup = () => {
     }
   };
 
+  const handleFormFinish = (values) => {
+    setFormValues(values);
+    if (values.role === 'seller') {
+      setIsModalVisible(true);
+    } else {
+      handleSignup();
+    }
+  };
+
+  const handleModalOk = () => {
+    setIsModalVisible(false);
+    handleSignup();
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center sm:justify-between bg-white">
       <ToastContainer />
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign Up</h2>
-        {error.general && <p className="text-red-500 text-center mb-4">{error.general}</p>}
-        <form onSubmit={handleSignup} className="space-y-4">
+        <Title level={2} className="text-center text-gray-800">Sign Up</Title>
+        {error.general && <Text type="danger" className="text-center mb-4">{error.general}</Text>}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleFormFinish}
+          className="space-y-4"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-                Username
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+            <Form.Item
+              label="Username"
+              name="username"
+              rules={[{ required: true, message: 'Username is required' }]}
+            >
+              <Input
                 placeholder="Enter your username"
-                className={`w-full px-3 py-2 border-b ${error.username ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
+                className="border-b border-0 border-b-2 border-gray-300"
               />
-              {error.username && <p className="text-red-500 text-sm mt-1">{error.username}</p>}
-            </div>
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                Email
-              </label>
-              <input
-                id="email"
+            </Form.Item>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: 'Email is required' }]}
+            >
+              <Input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className={`w-full px-3 py-2 border-b ${error.email ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
+                className="border-b border-0 border-b-2 border-gray-300"
               />
-              {error.email && <p className="text-red-500 text-sm mt-1">{error.email}</p>}
-            </div>
+            </Form.Item>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="relative">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                Password
-              </label>
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[{ required: true, message: 'Password is required' }]}
+              hasFeedback
+            >
+              <Input.Password
                 placeholder="Enter your password"
-                className={`w-full px-3 py-2 border-b ${error.password ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
+                className="border-b border-0 border-b-2 border-gray-300"
+                iconRender={visible => (visible ? <FaEyeSlash /> : <FaEye />)}
               />
-              <div
-                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                <span className='mt-[5vh]'>{showPassword ? <FaEyeSlash /> : <FaEye />}</span>
-              </div>
-              {error.password && <p className="text-red-500 text-sm mt-1">{error.password}</p>}
-            </div>
-            <div className="relative">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+            </Form.Item>
+            <Form.Item
+              label="Confirm Password"
+              name="confirmPassword"
+              dependencies={['password']}
+              hasFeedback
+              rules={[
+                { required: true, message: 'Confirm Password is required' },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('The two passwords do not match!'));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password
                 placeholder="Confirm your password"
-                className={`w-full px-3 py-2 border-b ${error.confirmPassword ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
+                className="border-b border-0 border-b-2 border-gray-300"
+                iconRender={visible => (visible ? <FaEyeSlash /> : <FaEye />)}
               />
-              <div
-                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Form.Item
+              label="Role"
+              name="role"
+              rules={[{ required: true, message: 'Role is required' }]}
+            >
+              <Select
+                placeholder="Select Role"
+                className="border-b border-0 border-b-2 border-gray-300"
+                onChange={value => setRole(value)}
               >
-                <span className='mt-[5vh]'>{showConfirmPassword ? <FaEyeSlash /> : <FaEye />}</span>
-              </div>
-              {error.confirmPassword && <p className="text-red-500 text-sm mt-1">{error.confirmPassword}</p>}
-            </div>
+                <Option value="customer">Customer</Option>
+                <Option value="seller">Seller</Option>
+              </Select>
+            </Form.Item>
+            <Tooltip
+              title="Make sure you have a payment system activated on this number"
+              visible={role === 'seller'}
+              placement="topRight"
+            >
+              <Form.Item
+                label="Mobile Number"
+                name="mobile"
+                rules={[
+                  { required: true, message: 'Mobile number is required' },
+                  { pattern: /^\d{10}$/, message: 'Mobile number must be 10 digits long' },
+                ]}
+              >
+                <Input
+                  addonBefore="+92"
+                  placeholder="Enter your mobile number"
+                  className="border-b border-0 border-b-2 border-gray-300"
+                />
+              </Form.Item>
+            </Tooltip>
           </div>
-          <div>
-            <div className='flex w-full justify-between'>
-              <div className="w-1/2">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
-                  Role
-                </label>
-                <select
-                  id="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className={`w-[21.6vw] flex px-3 py-2 border-b ${error.role ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
-                >
-                  <option value="">Select Role</option>
-                  <option value="customer">Customer</option>
-                  <option value="seller">Seller</option>
-                </select>
-                {error.role && <p className="text-red-500 text-sm mt-1">{error.role}</p>}
-              </div>
-              <div className="w-[21.6vw]">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="mobile">
-                  Mobile Number
-                </label>
-                <div className="flex items-center">
-                  <div className="flex items-center bg-white border-b border-gray-300 px-2 py-2 text-gray-700">
-                    +92
-                  </div>
-                  <input
-                    id="mobile"
-                    type="text"
-                    value={mobile}
-                    onChange={(e) => {
-                      const inputMobile = e.target.value.replace(/\D/g, ''); // Remove any non-digit characters
-                      setMobile(inputMobile);
-                    }}
-                    placeholder="Enter your mobile number"
-                    className={`flex-grow px-3 py-2 border-b ${error.mobile ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-500`}
-                  />
-                </div>
-                {error.mobile && <p className="text-red-500 text-sm mt-1">{error.mobile}</p>}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center sm:justify-between">
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+          <div className="flex flex-col items-center">
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              className="mb-4"
             >
               Sign Up
-            </button>
+            </Button>
             <p>Already have an account? <Link to='/' className="text-blue-500 hover:underline">Login</Link></p>
           </div>
-        </form>
+        </Form>
       </div>
 
-      <img src={backgroundImage} className='h-screen' alt="Background" />
+      <img src={backgroundImage} className='h-screen hidden sm:block' alt="Background" />
+
+      <Modal
+        title="Confirmation"
+        visible={isModalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        okText="Yes"
+        cancelText="No"
+      >
+        <p>Are you sure you have an Easypaisa, JazzCash, or SadaPay on this number: <span className="font-bold">{`0${formValues.mobile}`}</span> </p>
+      </Modal>
     </div>
   );
 };

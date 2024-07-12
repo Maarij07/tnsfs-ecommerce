@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { FaUsers, FaStore, FaThList } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import db from '../lib/firebase'; // Adjust the import path as needed
+import db from '../lib/firebase';
+import { Card, Col, Row, Typography, Statistic, Layout } from 'antd';
+
+const { Title } = Typography;
+const { Content } = Layout;
 
 const AdminDashboard = () => {
   const [totalCustomers, setTotalCustomers] = useState(0);
@@ -43,71 +47,76 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white p-2 rounded-lg shadow-md">
-          <div className="flex items-center">
-            <FaUsers className="text-4xl text-blue-500 mr-4" />
-            <div>
-              <p className="text-lg font-bold">Total Customers</p>
-              <p className="text-2xl">{totalCustomers}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white p-2 rounded-lg shadow-md">
-          <div className="flex items-center">
-            <FaStore className="text-4xl text-green-500 mr-4" />
-            <div>
-              <p className="text-lg font-bold">Total Sellers</p>
-              <p className="text-2xl">{totalVendors}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white p-2 rounded-lg shadow-md">
-          <div className="flex items-center">
-            <FaThList className="text-4xl text-purple-500 mr-4" />
-            <div>
-              <p className="text-lg font-bold">Total Categories</p>
-              <p className="text-2xl">{totalCategories}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text-xl font-bold mb-4">Total Sales (in price)</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={sampleSalesData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="sales" stroke="#8884d8" activeDot={{ r: 8 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text-xl font-bold mb-4">Total Units Sold (in quantity)</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={sampleSalesData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="units" stroke="#82ca9d" activeDot={{ r: 8 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
+    <Layout style={{ padding: '6px', backgroundColor: '#ffffff' }}>
+      <Content>
+        <Title level={3}>Admin Dashboard</Title>
+        <Row gutter={[12, 12]}>
+          <Col span={8}>
+            <Card>
+              <Statistic
+                title="Total Customers"
+                value={totalCustomers}
+                prefix={<FaUsers />}
+                valueStyle={{ color: '#3f8600', fontSize: '18px' }}
+                titleStyle={{ fontSize: '14px' }}
+              />
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card>
+              <Statistic
+                title="Total Sellers"
+                value={totalVendors}
+                prefix={<FaStore />}
+                valueStyle={{ color: '#108ee9', fontSize: '18px' }}
+                titleStyle={{ fontSize: '14px' }}
+              />
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card>
+              <Statistic
+                title="Total Categories"
+                value={totalCategories}
+                prefix={<FaThList />}
+                valueStyle={{ color: '#cf1322', fontSize: '18px' }}
+                titleStyle={{ fontSize: '14px' }}
+              />
+            </Card>
+          </Col>
+        </Row>
+        <Row gutter={[12, 12]} style={{ marginTop: '16px' }}>
+          <Col span={12}>
+            <Card title="Total Sales (in price)" headStyle={{ fontSize: '16px' }}>
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={sampleSalesData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="sales" stroke="#8884d8" activeDot={{ r: 8 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+          </Col>
+          <Col span={12}>
+            <Card title="Total Units Sold (in quantity)" headStyle={{ fontSize: '16px' }}>
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={sampleSalesData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="units" stroke="#82ca9d" activeDot={{ r: 8 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+          </Col>
+        </Row>
+      </Content>
+    </Layout>
   );
 };
 

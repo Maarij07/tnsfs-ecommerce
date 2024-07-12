@@ -63,13 +63,11 @@ const Signin = () => {
       return null;
     }
   };
-//  className="min-h-screen flex items-center bg-zinc-300 justify-between sm:justify-center hidden sm:flex">
-
 
   return (
-    <div className="min-h-screen flex items-center bg-zinc-300 justify-between">
-      <div className=" w-auto sm:w-[40vw] sm:mx-auto bg-zinc-200 p-8 mx-auto rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
+    <div className="min-h-screen flex items-center justify-between bg-white">
+      <div className="w-auto sm:w-[40vw] sm:mx-auto bg-white p-8 mx-auto rounded-lg shadow-lg">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign In</h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSignin}>
           <div className="mb-4">
@@ -104,7 +102,7 @@ const Signin = () => {
               <span className='mt-[5vh]'>{showPassword ? <FaEyeSlash /> : <FaEye />}</span>
             </div>
           </div>
-          <div className=" justify-between sm:flex items-center sm:justify-between">
+          <div className="flex justify-between items-center">
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600"

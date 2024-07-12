@@ -24,7 +24,7 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     const newError = {};
-  
+
     if (!username) newError.username = "Username is required";
     if (!email) newError.email = "Email is required";
     if (!password) newError.password = "Password is required";
@@ -33,11 +33,11 @@ const Signup = () => {
     if (!mobile) newError.mobile = "Mobile number is required";
     if (!/^\d{10}$/.test(mobile)) newError.mobile = "Mobile number must be 10 digits long";
     if (password !== confirmPassword) newError.confirmPassword = "Passwords do not match";
-  
+
     setError(newError);
-  
+
     if (Object.keys(newError).length > 0) return;
-  
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -56,13 +56,12 @@ const Signup = () => {
       setError({ general: error.message });
     }
   };
-  
 
   return (
-    <div className="min-h-screen flex items-center justify-center sm:justify-between bg-zinc-300">
+    <div className="min-h-screen flex items-center justify-center sm:justify-between bg-white">
       <ToastContainer />
-      <div className="bg-zinc-200 p-8 rounded-lg shadow-lg w-full max-w-2xl">
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign Up</h2>
         {error.general && <p className="text-red-500 text-center mb-4">{error.general}</p>}
         <form onSubmit={handleSignup} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -180,21 +179,19 @@ const Signup = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center  sm:justify-between">
+          <div className="flex flex-col sm:flex-row items-center sm:justify-between">
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
             >
               Sign Up
             </button>
-            <p>Already have an account? <Link to='/' className="text-blue-500 hover:underline ">Login</Link></p>
+            <p>Already have an account? <Link to='/' className="text-blue-500 hover:underline">Login</Link></p>
           </div>
         </form>
       </div>
 
-      <img src={backgroundImage} className='h-screen bg-green-500' alt="" />
-
-
+      <img src={backgroundImage} className='h-screen' alt="Background" />
     </div>
   );
 };

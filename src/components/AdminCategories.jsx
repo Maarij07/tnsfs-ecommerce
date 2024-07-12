@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc } from 'firebase/firestore';
-import { FaGem, FaPlusCircle, FaQuestionCircle, FaTshirt, FaChevronDown, FaChevronUp, FaTrash } from 'react-icons/fa';
+import { PlusCircleOutlined, QuestionCircleOutlined, DeleteOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
 import db from '../lib/firebase'; // adjust the import path as needed
+import { Button, Input, Collapse, Typography, Space, Avatar } from 'antd';
+import { FaGem, FaTshirt } from 'react-icons/fa';
+
+const { Panel } = Collapse;
+const { Text } = Typography;
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newSubcategoryNames, setNewSubcategoryNames] = useState({});
-  const [accordionOpen, setAccordionOpen] = useState({});
+  const [activeAccordion, setActiveAccordion] = useState('');
 
   useEffect(() => {
     fetchCategories();
@@ -75,95 +80,77 @@ const AdminCategories = () => {
     }
   };
 
-  const getCategoryIcon = (categoryName) => {
-    const iconMap = {
-      'artificial jewellery': <FaGem />,
-      'southern clothing': <FaTshirt />,
-    };
-    return iconMap[categoryName.toLowerCase()] || <FaQuestionCircle />;
-  };
-
-  const handleSubcategoryInputChange = (categoryId, value) => {
-    setNewSubcategoryNames({ ...newSubcategoryNames, [categoryId]: value });
-  };
-
   const toggleAccordion = (categoryId) => {
-    setAccordionOpen({ ...accordionOpen, [categoryId]: !accordionOpen[categoryId] });
+    setActiveAccordion(activeAccordion === categoryId ? '' : categoryId);
   };
 
   return (
     <div>
-      <h2 className="text-2xl mb-4">Categories</h2>
-      <div className="flex items-center mb-4">
-        <button
-          onClick={handleAddCategory}
-          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center"
-        >
-          <FaPlusCircle className="mr-2" />
-          Add Category
-        </button>
-        <input
-          type="text"
-          className="ml-4 border border-gray-300 px-3 py-2 rounded-lg"
-          placeholder="Enter category name"
-          value={newCategoryName}
-          onChange={(e) => setNewCategoryName(e.target.value)}
-        />
-      </div>
-      <div>
+      <Typography.Title level={2}>Categories</Typography.Title>
+      <Space direction="vertical" style={{ marginBottom: 16 }}>
+        <Space>
+          <Button type="primary" icon={<PlusCircleOutlined />} onClick={handleAddCategory}>
+            Add Category
+          </Button>
+          <Input
+            style={{ width: 200 }}
+            placeholder="Enter category name"
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+          />
+        </Space>
+      </Space>
+      <Collapse accordion activeKey={activeAccordion} onChange={toggleAccordion}>
         {categories.map(category => (
-          <div key={category.id} className="bg-white shadow-md rounded-lg p-4 mb-2">
-            <div className="flex justify-between items-center mb-2 cursor-pointer" onClick={() => toggleAccordion(category.id)}>
-              <div className="flex items-center">
-                {getCategoryIcon(category.name)}
-                <span className="ml-2">{category.name}</span>
-              </div>
-              <div className="flex items-center">
-                <button
-                  onClick={() => handleDeleteCategory(category.id)}
-                  className="text-red-500 hover:text-red-700 mr-2"
-                >
-                  Delete Category
-                </button>
-                {accordionOpen[category.id] ? <FaChevronUp /> : <FaChevronDown />}
-              </div>
-            </div>
-            {accordionOpen[category.id] && (
-              <div className="ml-4 border-l-2 border-gray-300 pl-4">
-                {category.subcategories && category.subcategories.map(subcategory => (
-                  <div key={subcategory} className="flex justify-between items-center mb-1 ml-4">
-                    <span>{subcategory}</span>
-                    <button
-                      onClick={() => handleDeleteSubcategory(category.id, subcategory)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <FaTrash />
-                    </button>
-                  </div>
-                ))}
-                <div className="flex items-center mt-2 ml-4">
-                  <input
-                    type="text"
-                    className="border border-gray-300 px-3 py-2 rounded-lg"
-                    placeholder="Enter subcategory name"
-                    value={newSubcategoryNames[category.id] || ''}
-                    onChange={(e) => handleSubcategoryInputChange(category.id, e.target.value)}
-                  />
-                  <button
-                    onClick={() => handleAddSubcategory(category.id)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center ml-2"
-                  >
-                    <FaPlusCircle className="mr-2" />
-                    Add Subcategory
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <Panel
+            key={category.id}
+            header={
+              <Space align="center">
+                <Avatar icon={getCategoryIcon(category.name)} />
+                <Text strong>{category.name}</Text>
+                <Space>
+                  <Button type="link" danger onClick={() => handleDeleteCategory(category.id)}>
+                    <DeleteOutlined /> Delete Category
+                  </Button>
+                  {activeAccordion === category.id ? <CaretUpOutlined /> : <CaretDownOutlined />}
+                </Space>
+              </Space>
+            }
+          >
+            <Space direction="vertical" style={{ marginLeft: 24 }}>
+              {category.subcategories && category.subcategories.map(subcategory => (
+                <Space key={subcategory} align="center">
+                  <Text>{subcategory}</Text>
+                  <Button type="link" danger onClick={() => handleDeleteSubcategory(category.id, subcategory)}>
+                    <DeleteOutlined />
+                  </Button>
+                </Space>
+              ))}
+              <Space>
+                <Input
+                  style={{ width: 200 }}
+                  placeholder="Enter subcategory name"
+                  value={newSubcategoryNames[category.id] || ''}
+                  onChange={(e) => handleSubcategoryInputChange(category.id, e.target.value)}
+                />
+                <Button type="primary" icon={<PlusCircleOutlined />} onClick={() => handleAddSubcategory(category.id)}>
+                  Add Subcategory
+                </Button>
+              </Space>
+            </Space>
+          </Panel>
         ))}
-      </div>
+      </Collapse>
     </div>
   );
+};
+
+const getCategoryIcon = (categoryName) => {
+  const iconMap = {
+    'artificial jewellery': <FaGem />,
+    'southern clothing': <FaTshirt />,
+  };
+  return iconMap[categoryName.toLowerCase()] || <QuestionCircleOutlined />;
 };
 
 export default AdminCategories;

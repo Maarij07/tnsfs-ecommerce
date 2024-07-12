@@ -10,6 +10,10 @@ import AdminTopSellingProducts from './AdminTopSellingProducts';
 import db, { auth } from '../lib/firebase'; // adjust the import path as needed
 import { useLocalContext } from '../context/context';
 import { signOut } from 'firebase/auth';
+import { Layout, Menu, Modal, Typography, Avatar, Dropdown } from 'antd';
+
+const { Header, Sider, Content } = Layout;
+const { Title } = Typography;
 
 const Admin = () => {
   const { loggedInUser, setLoggedInUser } = useLocalContext();
@@ -51,7 +55,6 @@ const Admin = () => {
   const confirmLogout = () => {
     signOut(auth).then(() => {
       setLoggedInUser(null);
-      // Replace Navigate('/') with your actual navigation logic
       console.log('Logged out successfully.');
     }).catch((error) => {
       console.log(error);
@@ -62,15 +65,6 @@ const Admin = () => {
   const cancelLogout = () => {
     setShowLogoutModal(false);
     console.log('Logout cancelled.');
-  };
-
-  const toggleProfileMenu = () => {
-    setShowProfileMenu(!showProfileMenu);
-  };
-
-  const handleLogoutProfileOption = () => {
-    setShowProfileMenu(false);
-    handleLogout();
   };
 
   const renderContent = () => {
@@ -92,110 +86,80 @@ const Admin = () => {
     }
   };
 
+  const profileMenu = (
+    <Menu>
+      <Menu.Item onClick={() => { /* Add functionality for changing password here */ }}>
+        <div className="flex items-center">
+          <FaLock style={{ marginRight: 8 }} />
+          <span>Change Password</span>
+        </div>
+      </Menu.Item>
+      <Menu.Item onClick={handleLogout}>
+        <div className="flex items-center">
+          <FaSignOutAlt style={{ marginRight: 8 }} />
+          <span>Logout</span>
+        </div>
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="py-4 px-8 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Admin Panel</h1>
-        <div className="relative">
-          <FaUserCircle
-            className="text-3xl cursor-pointer text-gray-600 hover:text-gray-800"
-            onClick={toggleProfileMenu}
+    <Layout style={{ minHeight: '100vh' }}>
+      <Header style={{ backgroundColor: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 24px' }}>
+        <Title level={3} style={{ margin: 0, paddingTop: '12px' }}>Admin Panel</Title>
+        <Dropdown overlay={profileMenu} trigger={['click']} placement="bottomRight">
+          <Avatar
+            icon={<FaUserCircle />}
+            size="large"
+            style={{ cursor: 'pointer', backgroundColor: '#1890ff' }}
           />
-          {showProfileMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
-              <button
-                onClick={() => {} /* Add functionality for changing password here */}
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-              >
-                <FaLock className="mr-2" />
-                Change Password
-              </button>
-              <button
-                onClick={handleLogoutProfileOption}
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-              >
-                <FaSignOutAlt className="mr-2" />
-                Logout
-              </button>
-            </div>
-          )}
-        </div>
-      </header>
-      <div className="flex flex-1">
-        <aside className="w-64 bg-ebebeb text-black p-6">
-          <nav>
-            <ul>
-              <li
-                className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'dashboard' ? 'bg-gray-300' : ''}`}
-                onClick={() => setActiveTab('dashboard')}
-              >
-                <FaTachometerAlt className="mr-2" />
-                Dashboard
-              </li>
-              <li
-                className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'categories' ? 'bg-gray-300' : ''}`}
-                onClick={() => setActiveTab('categories')}
-              >
-                <FaThList className="mr-2" />
-                Categories
-              </li>
-              <li
-                className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'customers' ? 'bg-gray-300' : ''}`}
-                onClick={() => setActiveTab('customers')}
-              >
-                <FaUsers className="mr-2" />
-                Customers
-              </li>
-              <li
-                className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'sellers' ? 'bg-gray-300' : ''}`}
-                onClick={() => setActiveTab('sellers')}
-              >
-                <FaStore className="mr-2" />
-                Sellers
-              </li>
-              <li
-                className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'topSellers' ? 'bg-gray-300' : ''}`}
-                onClick={() => setActiveTab('topSellers')}
-              >
-                <FaTrophy className="mr-2" />
-                Top Sellers
-              </li>
-              <li
-                className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'topSellingProducts' ? 'bg-gray-300' : ''}`}
-                onClick={() => setActiveTab('topSellingProducts')}
-              >
-                <FaShoppingCart className="mr-2" />
-                Top Selling Products
-              </li>
-            </ul>
-          </nav>
-        </aside>
-        <main className="flex-1 p-6 bg-gray-100">
-          {renderContent()}
-        </main>
-      </div>
-      {showLogoutModal && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-xl mb-4">Are you sure you want to logout?</p>
-            <div className="flex justify-end">
-              <button
-                onClick={confirmLogout}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded mr-2"
-              >
-                Yes
-              </button>
-              <button
-                onClick={cancelLogout}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
-              >
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+        </Dropdown>
+      </Header>
+      <Layout>
+        <Sider width={200} style={{ backgroundColor: '#fff' }}>
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={['dashboard']}
+            style={{ height: '100%', borderRight: 0 }}
+            onClick={({ key }) => setActiveTab(key)}
+          >
+            <Menu.Item key="dashboard" icon={<FaTachometerAlt />}>
+              Dashboard
+            </Menu.Item>
+            <Menu.Item key="categories" icon={<FaThList />}>
+              Categories
+            </Menu.Item>
+            <Menu.Item key="customers" icon={<FaUsers />}>
+              Customers
+            </Menu.Item>
+            <Menu.Item key="sellers" icon={<FaStore />}>
+              Sellers
+            </Menu.Item>
+            <Menu.Item key="topSellers" icon={<FaTrophy />}>
+              Top Sellers
+            </Menu.Item>
+            <Menu.Item key="topSellingProducts" icon={<FaShoppingCart />}>
+              Top Selling Products
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout style={{ padding: '24px', backgroundColor: '#f0f2f5' }}>
+          <Content style={{ padding: 24, margin: 0, backgroundColor: '#fff', minHeight: 280 }}>
+            {renderContent()}
+          </Content>
+        </Layout>
+      </Layout>
+      <Modal
+        title="Logout"
+        visible={showLogoutModal}
+        onOk={confirmLogout}
+        onCancel={cancelLogout}
+        okText="Yes"
+        cancelText="No"
+      >
+        <p>Are you sure you want to logout?</p>
+      </Modal>
+    </Layout>
   );
 };
 

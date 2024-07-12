@@ -1,11 +1,16 @@
 import React from 'react';
+import { Spin, Typography, Space } from 'antd';
+
+const { Title } = Typography;
 
 const LoadingScreen = () => {
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-200">
+    <div className="flex items-center justify-center h-screen bg-white">
       <div className="flex flex-col items-center">
-        <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-24 w-24 mb-4"></div>
-        <p className="text-gray-600 text-xl">Loading...</p>
+        <Space direction="vertical" size="large">
+          <Spin size="large" />
+          <Title level={3} className="text-gray-600">Loading...</Title>
+        </Space>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { auth } from '../lib/firebase';
 import db from '../lib/firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -21,6 +21,8 @@ const Signup = () => {
   const [role, setRole] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formValues, setFormValues] = useState({});
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true); // State to manage the button disabled state
+  const [countdown, setCountdown] = useState(5); // State for countdown timer
   const navigate = useNavigate();
 
   const handleSignup = async () => {
@@ -56,15 +58,32 @@ const Signup = () => {
   const handleFormFinish = (values) => {
     setFormValues(values);
     if (values.role === 'seller') {
+      setRole(values.role);  // Ensure role is set
       setIsModalVisible(true);
+
+      // Reset countdown and disable button
+      setCountdown(5);
+      setIsButtonDisabled(true);
+
+      // Start countdown timer
+      const countdownInterval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(countdownInterval);
+            setIsButtonDisabled(false); // Enable the button
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000); // Update countdown every second
     } else {
       handleSignup();
     }
   };
 
   const handleModalOk = () => {
-    setIsModalVisible(false);
     handleSignup();
+    setIsModalVisible(false);
   };
 
   const handleModalCancel = () => {
@@ -202,8 +221,11 @@ const Signup = () => {
         onCancel={handleModalCancel}
         okText="Yes"
         cancelText="No"
+        okButtonProps={{ disabled: isButtonDisabled }} // Disable the OK button initially
       >
         <p>Are you sure you have an Easypaisa, JazzCash, or SadaPay on this number: <span className="font-bold">{`0${formValues.mobile}`}</span> </p>
+        <p className='text-red-500'>You would not be able to change this number later</p>
+        <p className="text-center text-gray-500">You can proceed in {countdown} seconds</p>
       </Modal>
     </div>
   );

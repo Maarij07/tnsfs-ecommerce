@@ -5,6 +5,7 @@ import Signin from "./components/Signin";
 import Admin from "./components/Admin";
 import Seller from "./components/Seller";
 import LoadingScreen from "./components/LoadingScreen";
+import Cart from "./components/Cart";
 import { useLocalContext } from "./context/context";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
@@ -13,12 +14,11 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate fetching user role or any necessary data
-    setIsLoading(true); // Simulate loading state
+    setIsLoading(true); 
     setTimeout(() => {
-      setIsLoading(false); // Simulate fetching done after 1 second (adjust as needed)
+      setIsLoading(false); 
     }, 1000);
-  }, []); // Run once on component mount
+  }, []); 
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -48,6 +48,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
+    // <Cart/>
   );
 }
 

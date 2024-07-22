@@ -53,21 +53,22 @@ const SellerProducts = () => {
         await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(storageRef);
         setFileList([...fileList, { uid: file.uid, name: file.name, url: downloadURL }]);
+        return false; // Prevent auto-upload
     };
 
     const handleProductSubmit = async (values) => {
         try {
+            const selectedCategory = categories.find(category => category.id === values.category);
             const productData = {
                 name: values.name,
                 description: values.description,
                 price: parseFloat(values.price), // Convert price to number
-                category: values.category,
+                category: selectedCategory ? selectedCategory.name : '', // Store category name
                 subcategory: values.subcategory || null,
                 quantity: values.quantity, // Add quantity to product data
                 images: fileList.map(file => ({ name: file.name, url: file.url })),
                 sellerEmail: loggedInUser.email, // Add seller's email
             };
-
             await setDoc(doc(db, 'products', `${productData.category}_${productData.name.toLowerCase()}_${uuidv4()}`), productData);
             message.success('Product uploaded successfully!');
             form.resetFields();

@@ -3,7 +3,10 @@ import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc } from 'firebase
 import { PlusCircleOutlined, QuestionCircleOutlined, DeleteOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
 import db from '../lib/firebase'; // adjust the import path as needed
 import { Button, Input, Collapse, Typography, Space, Avatar } from 'antd';
-import { FaGem, FaTshirt } from 'react-icons/fa';
+import { FaGem, FaTshirt  } from 'react-icons/fa';
+import { FaKitchenSet } from "react-icons/fa6";
+import { PiHairDryerLight } from "react-icons/pi";
+import { PiBaby } from "react-icons/pi";
 
 const { Panel } = Collapse;
 const { Text } = Typography;
@@ -147,8 +150,12 @@ const AdminCategories = () => {
 
 const getCategoryIcon = (categoryName) => {
   const iconMap = {
-    'artificial jewellery': <FaGem />,
+    'accessories': <FaGem />,
     'southern clothing': <FaTshirt />,
+    'beauty & health': <PiHairDryerLight />,
+    'kitchen': <FaKitchenSet />,
+    'baby care': <PiBaby />,
+    
   };
   return iconMap[categoryName.toLowerCase()] || <QuestionCircleOutlined />;
 };

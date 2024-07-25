@@ -47,11 +47,11 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <Layout style={{ padding: '6px', backgroundColor: '#ffffff' }}>
+    <Layout style={{ padding: '12px', backgroundColor: '#ffffff' }}>
       <Content>
-        <Title level={3}>Admin Dashboard</Title>
-        <Row gutter={[12, 12]}>
-          <Col span={8}>
+        <Title level={3} style={{ textAlign: 'center', marginBottom: '16px' }}>Admin Dashboard</Title>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={12} md={8}>
             <Card>
               <Statistic
                 title="Total Customers"
@@ -62,7 +62,7 @@ const AdminDashboard = () => {
               />
             </Card>
           </Col>
-          <Col span={8}>
+          <Col xs={24} sm={12} md={8}>
             <Card>
               <Statistic
                 title="Total Sellers"
@@ -73,7 +73,7 @@ const AdminDashboard = () => {
               />
             </Card>
           </Col>
-          <Col span={8}>
+          <Col xs={24} sm={12} md={8}>
             <Card>
               <Statistic
                 title="Total Categories"
@@ -85,8 +85,8 @@ const AdminDashboard = () => {
             </Card>
           </Col>
         </Row>
-        <Row gutter={[12, 12]} style={{ marginTop: '16px' }}>
-          <Col span={12}>
+        <Row gutter={[16, 16]} style={{ marginTop: '16px' }}>
+          <Col xs={24} sm={12}>
             <Card title="Total Sales (in price)" headStyle={{ fontSize: '16px' }}>
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={sampleSalesData}>
@@ -100,7 +100,7 @@ const AdminDashboard = () => {
               </ResponsiveContainer>
             </Card>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Card title="Total Units Sold (in quantity)" headStyle={{ fontSize: '16px' }}>
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={sampleSalesData}>

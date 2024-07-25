@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { FaUserCircle, FaTachometerAlt, FaUsers, FaStore, FaThList, FaTrophy, FaShoppingCart, FaLock, FaSignOutAlt } from 'react-icons/fa';
+import { FaUserCircle, FaTachometerAlt, FaUsers, FaStore, FaThList, FaTrophy, FaShoppingCart, FaLock, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
 import AdminCustomers from './AdminCustomers';
 import AdminVendors from './AdminVendors';
 import AdminCategories from './AdminCategories';
 import AdminDashboard from './AdminDashboard';
 import AdminTopSellers from './AdminTopSellers';
 import AdminTopSellingProducts from './AdminTopSellingProducts';
-import db, { auth } from '../lib/firebase'; // adjust the import path as needed
+import db, { auth } from '../lib/firebase';
 import { useLocalContext } from '../context/context';
 import { signOut } from 'firebase/auth';
-import { Layout, Menu, Modal, Typography, Avatar, Dropdown } from 'antd';
+import { Layout, Menu, Modal, Avatar, Dropdown, Drawer, Button } from 'antd';
 
 const { Header, Sider, Content } = Layout;
-const { Title } = Typography;
 
 const Admin = () => {
   const { loggedInUser, setLoggedInUser } = useLocalContext();
@@ -21,7 +20,7 @@ const Admin = () => {
   const [customers, setCustomers] = useState([]);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [vendors, setVendors] = useState([]);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -104,23 +103,31 @@ const Admin = () => {
   );
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ backgroundColor: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 24px' }}>
-        <Title level={3} style={{ margin: 0, paddingTop: '12px' }}>Admin Panel</Title>
+    <Layout className="min-h-screen">
+      <Header className="bg-white flex justify-between items-center p-4">
+        <div className="flex items-center">
+          <Button
+            type="text"
+            icon={<FaBars />}
+            onClick={() => setDrawerVisible(true)}
+            className="lg:hidden"
+          />
+          <h3 className="text-xl font-bold ml-4">Admin Panel</h3>
+        </div>
         <Dropdown overlay={profileMenu} trigger={['click']} placement="bottomRight">
           <Avatar
             icon={<FaUserCircle />}
             size="large"
-            style={{ cursor: 'pointer', backgroundColor: '#1890ff' }}
+            className="cursor-pointer bg-blue-500"
           />
         </Dropdown>
       </Header>
       <Layout>
-        <Sider width={200} style={{ backgroundColor: '#fff' }}>
+        <Sider width={200} className="bg-white hidden lg:block">
           <Menu
             mode="inline"
             defaultSelectedKeys={['dashboard']}
-            style={{ height: '100%', borderRight: 0 }}
+            className="h-full border-r-0"
             onClick={({ key }) => setActiveTab(key)}
           >
             <Menu.Item key="dashboard" icon={<FaTachometerAlt />}>
@@ -143,12 +150,57 @@ const Admin = () => {
             </Menu.Item>
           </Menu>
         </Sider>
-        <Layout style={{ padding: '24px', backgroundColor: '#f0f2f5' }}>
-          <Content style={{ padding: 24, margin: 0, backgroundColor: '#fff', minHeight: 280 }}>
+        <Layout className="p-6 bg-gray-100">
+          <Content className="p-6 bg-white min-h-full">
             {renderContent()}
           </Content>
         </Layout>
       </Layout>
+      <Drawer
+        title={
+          <div className="flex justify-between items-center">
+            <span>Menu</span>
+            <Button
+              type="text"
+              icon={<FaTimes />}
+              onClick={() => setDrawerVisible(false)}
+            />
+          </div>
+        }
+        placement="left"
+        closable={false}
+        onClose={() => setDrawerVisible(false)}
+        visible={drawerVisible}
+        className="lg:hidden"
+      >
+        <Menu
+          mode="inline"
+          defaultSelectedKeys={['dashboard']}
+          onClick={({ key }) => {
+            setActiveTab(key);
+            setDrawerVisible(false);
+          }}
+        >
+          <Menu.Item key="dashboard" icon={<FaTachometerAlt />}>
+            Dashboard
+          </Menu.Item>
+          <Menu.Item key="categories" icon={<FaThList />}>
+            Categories
+          </Menu.Item>
+          <Menu.Item key="customers" icon={<FaUsers />}>
+            Customers
+          </Menu.Item>
+          <Menu.Item key="sellers" icon={<FaStore />}>
+            Sellers
+          </Menu.Item>
+          <Menu.Item key="topSellers" icon={<FaTrophy />}>
+            Top Sellers
+          </Menu.Item>
+          <Menu.Item key="topSellingProducts" icon={<FaShoppingCart />}>
+            Top Selling Products
+          </Menu.Item>
+        </Menu>
+      </Drawer>
       <Modal
         title="Logout"
         visible={showLogoutModal}

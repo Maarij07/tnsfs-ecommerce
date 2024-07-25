@@ -12,8 +12,10 @@ const AdminTopSellers = () => {
   ];
 
   return (
-    <div>
-      <Title level={2} className="text-2xl mb-4">Top Sellers</Title>
+    <div style={{ padding: '16px', maxWidth: '600px', margin: '0 auto' }}>
+      <Title level={2} style={{ fontSize: '1.5rem', marginBottom: '16px', textAlign: 'center' }}>
+        Top Sellers
+      </Title>
       <List
         itemLayout="horizontal"
         dataSource={topSellers.slice(0, 3)} // Show only the top 3 sellers
@@ -22,12 +24,15 @@ const AdminTopSellers = () => {
             <List.Item.Meta
               avatar={<Avatar>{seller.name.charAt(0)}</Avatar>}
               title={
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{ fontWeight: index === 0 ? 'bold' : 'normal' }}>{seller.name}</span>
-                  {index === 0 && <span style={{ marginLeft: '8px', color: '#1890ff' }}>(Top Seller)</span>}
+                  {index === 0 && (
+                    <span style={{ marginLeft: '8px', color: '#1890ff' }}>(Top Seller)</span>
+                  )}
                 </div>
               }
               description={`Sales: ${seller.sales}`}
+              style={{ padding: '8px 0' }}
             />
           </List.Item>
         )}

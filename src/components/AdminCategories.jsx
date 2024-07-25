@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc } from 'firebase/firestore';
 import { PlusCircleOutlined, QuestionCircleOutlined, DeleteOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
 import db from '../lib/firebase'; // adjust the import path as needed
-import { Button, Input, Collapse, Typography, Space, Avatar } from 'antd';
-import { FaGem, FaTshirt  } from 'react-icons/fa';
+import { Button, Input, Collapse, Typography, Space, Avatar, Row, Col } from 'antd';
+import { FaGem, FaTshirt } from 'react-icons/fa';
 import { FaKitchenSet } from "react-icons/fa6";
 import { PiHairDryerLight } from "react-icons/pi";
 import { PiBaby } from "react-icons/pi";
@@ -83,6 +83,10 @@ const AdminCategories = () => {
     }
   };
 
+  const handleSubcategoryInputChange = (categoryId, value) => {
+    setNewSubcategoryNames({ ...newSubcategoryNames, [categoryId]: value });
+  };
+
   const toggleAccordion = (categoryId) => {
     setActiveAccordion(activeAccordion === categoryId ? '' : categoryId);
   };
@@ -90,56 +94,72 @@ const AdminCategories = () => {
   return (
     <div>
       <Typography.Title level={2}>Categories</Typography.Title>
-      <Space direction="vertical" style={{ marginBottom: 16 }}>
-        <Space>
-          <Button type="primary" icon={<PlusCircleOutlined />} onClick={handleAddCategory}>
-            Add Category
-          </Button>
+      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+        <Col xs={24} sm={16} md={8} lg={6}>
           <Input
-            style={{ width: 200 }}
+            style={{ width: '100%' }}
             placeholder="Enter category name"
             value={newCategoryName}
             onChange={(e) => setNewCategoryName(e.target.value)}
           />
-        </Space>
-      </Space>
+        </Col>
+        <Col xs={24} sm={8} md={4}>
+          <Button type="primary" icon={<PlusCircleOutlined />} onClick={handleAddCategory} style={{ width: '100%' }}>
+            Add Category
+          </Button>
+        </Col>
+      </Row>
       <Collapse accordion activeKey={activeAccordion} onChange={toggleAccordion}>
         {categories.map(category => (
           <Panel
             key={category.id}
             header={
-              <Space align="center">
-                <Avatar icon={getCategoryIcon(category.name)} />
-                <Text strong>{category.name}</Text>
-                <Space>
-                  <Button type="link" danger onClick={() => handleDeleteCategory(category.id)}>
-                    <DeleteOutlined /> Delete Category
-                  </Button>
-                  {activeAccordion === category.id ? <CaretUpOutlined /> : <CaretDownOutlined />}
-                </Space>
-              </Space>
+              <Row align="middle" justify="space-between">
+                <Col>
+                  <Space align="center">
+                    <Avatar icon={getCategoryIcon(category.name)} />
+                    <Text strong>{category.name}</Text>
+                  </Space>
+                </Col>
+                <Col>
+                  <Space>
+                    <Button type="link" danger onClick={() => handleDeleteCategory(category.id)}>
+                      <DeleteOutlined /> Delete Category
+                    </Button>
+                    {activeAccordion === category.id ? <CaretUpOutlined /> : <CaretDownOutlined />}
+                  </Space>
+                </Col>
+              </Row>
             }
           >
             <Space direction="vertical" style={{ marginLeft: 24 }}>
               {category.subcategories && category.subcategories.map(subcategory => (
-                <Space key={subcategory} align="center">
-                  <Text>{subcategory}</Text>
-                  <Button type="link" danger onClick={() => handleDeleteSubcategory(category.id, subcategory)}>
-                    <DeleteOutlined />
-                  </Button>
-                </Space>
+                <Row key={subcategory} align="middle" justify="space-between">
+                  <Col>
+                    <Text>{subcategory}</Text>
+                  </Col>
+                  <Col>
+                    <Button type="link" danger onClick={() => handleDeleteSubcategory(category.id, subcategory)}>
+                      <DeleteOutlined />
+                    </Button>
+                  </Col>
+                </Row>
               ))}
-              <Space>
-                <Input
-                  style={{ width: 200 }}
-                  placeholder="Enter subcategory name"
-                  value={newSubcategoryNames[category.id] || ''}
-                  onChange={(e) => handleSubcategoryInputChange(category.id, e.target.value)}
-                />
-                <Button type="primary" icon={<PlusCircleOutlined />} onClick={() => handleAddSubcategory(category.id)}>
-                  Add Subcategory
-                </Button>
-              </Space>
+              <Row gutter={[16, 16]}>
+                <Col xs={24} sm={16} md={12}>
+                  <Input
+                    style={{ width: '100%' }}
+                    placeholder="Enter subcategory name"
+                    value={newSubcategoryNames[category.id] || ''}
+                    onChange={(e) => handleSubcategoryInputChange(category.id, e.target.value)}
+                  />
+                </Col>
+                <Col xs={24} sm={8} md={4}>
+                  <Button type="primary" icon={<PlusCircleOutlined />} onClick={() => handleAddSubcategory(category.id)} style={{ width: '100%' }}>
+                    Add Subcategory
+                  </Button>
+                </Col>
+              </Row>
             </Space>
           </Panel>
         ))}
@@ -155,7 +175,6 @@ const getCategoryIcon = (categoryName) => {
     'beauty & health': <PiHairDryerLight />,
     'kitchen': <FaKitchenSet />,
     'baby care': <PiBaby />,
-    
   };
   return iconMap[categoryName.toLowerCase()] || <QuestionCircleOutlined />;
 };

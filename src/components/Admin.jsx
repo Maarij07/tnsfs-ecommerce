@@ -86,7 +86,7 @@ const Admin = () => {
   };
 
   const profileMenu = (
-    <Menu>
+    <Menu style={{ minWidth: '150px' }}>
       <Menu.Item onClick={() => { /* Add functionality for changing password here */ }}>
         <div className="flex items-center">
           <FaLock style={{ marginRight: 8 }} />

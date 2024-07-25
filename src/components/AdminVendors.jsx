@@ -36,14 +36,14 @@ const AdminVendors = ({ vendors, handleDelete }) => {
   ];
 
   return (
-    <div>
-      <Title level={2} className="text-xl font-bold mb-4">Vendors</Title>
+    <div style={{ padding: '16px' }}>
+      <Title level={2} className="mb-4">Vendors</Title>
       <Table
         dataSource={vendors}
         columns={columns}
         rowKey="id"
         pagination={false}
-        className="min-w-full bg-white"
+        scroll={{ x: true }}
       />
     </div>
   );

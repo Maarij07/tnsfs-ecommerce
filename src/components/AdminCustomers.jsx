@@ -36,7 +36,7 @@ const AdminCustomers = ({ customers, handleDelete }) => {
   ];
 
   return (
-    <div>
+    <div style={{ padding: '16px' }}>
       <Title level={2} className="mb-4">Customers</Title>
       <Table
         dataSource={customers}
@@ -44,6 +44,7 @@ const AdminCustomers = ({ customers, handleDelete }) => {
         rowKey="id"
         pagination={false}
         className="bg-white"
+        scroll={{ x: true }}
       />
     </div>
   );

@@ -76,8 +76,8 @@ const SellerDashboard = () => {
 
   return (
     <div className="p-6 bg-white shadow-lg rounded-lg">
-      <Row gutter={16}>
-        <Col span={12}>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12}>
           <Card
             className="bg-white shadow-sm"
             bordered={false}
@@ -92,7 +92,7 @@ const SellerDashboard = () => {
             </div>
           </Card>
         </Col>
-        <Col span={12}>
+        <Col xs={24} sm={12}>
           <Card
             className="bg-white shadow-sm"
             bordered={false}
@@ -109,39 +109,43 @@ const SellerDashboard = () => {
         </Col>
       </Row>
 
-      <Row gutter={16} style={{ marginTop: '20px' }}>
-        <Col span={12}>
+      <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
+        <Col xs={24} sm={12}>
           <Card title="Sales per Month" className="bg-white shadow-sm">
-            <LineChart
-              width={400}
-              height={300}
-              data={salesData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="sales" stroke="#8884d8" />
-            </LineChart>
+            <div style={{ overflowX: 'auto' }}>
+              <LineChart
+                width={400}
+                height={300}
+                data={salesData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="sales" stroke="#8884d8" />
+              </LineChart>
+            </div>
           </Card>
         </Col>
-        <Col span={12}>
+        <Col xs={24} sm={12}>
           <Card title="Units Sold per Month" className="bg-white shadow-sm">
-            <LineChart
-              width={400}
-              height={300}
-              data={unitsData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="units" stroke="#82ca9d" />
-            </LineChart>
+            <div style={{ overflowX: 'auto' }}>
+              <LineChart
+                width={400}
+                height={300}
+                data={unitsData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="units" stroke="#82ca9d" />
+              </LineChart>
+            </div>
           </Card>
         </Col>
       </Row>

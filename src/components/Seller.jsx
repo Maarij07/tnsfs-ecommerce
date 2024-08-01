@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FaUserCircle, FaTachometerAlt, FaThList, FaShoppingCart } from 'react-icons/fa';
-import { Popover, Button, Modal, Form, Input, Upload, message } from 'antd';
+import { FaUserCircle, FaTachometerAlt, FaThList, FaShoppingCart, FaBars } from 'react-icons/fa';
+import { Popover, Button, Modal, Form, Input, Upload, message, Drawer } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import SellerDashboard from './SellerDashboard';
 import SellerProducts from './SellerProducts';
@@ -25,6 +25,7 @@ const Seller = () => {
     const [cnicBack, setCnicBack] = useState(null);
     const [cnicFrontImage, setCnicFrontImage] = useState(null);  // State for the CNIC front image preview
     const [cnicBackImage, setCnicBackImage] = useState(null);    // State for the CNIC back image preview
+    const [drawerVisible, setDrawerVisible] = useState(false); // State for mobile drawer visibility
 
     useEffect(() => {
         if (loggedInUser) {
@@ -176,13 +177,16 @@ const Seller = () => {
     return (
         <div className="flex flex-col h-screen">
             <header className="bg-gray-100 p-4 flex justify-between items-center fixed w-full top-0 left-0 z-10">
-                <h1 className="text-2xl font-bold">Seller Dashboard</h1>
+                <div className="flex items-center">
+                    <FaBars className="text-2xl cursor-pointer lg:hidden mr-2" onClick={() => setDrawerVisible(true)} />
+                    <h1 className="text-2xl font-bold">Seller Dashboard</h1>
+                </div>
                 <Popover content={profileMenu} visible={showProfileMenu} onVisibleChange={setShowProfileMenu}>
                     <FaUserCircle className="text-3xl cursor-pointer text-gray-500 hover:text-gray-700" />
                 </Popover>
             </header>
             <div className="flex flex-1 mt-16">
-                <aside className="w-64 bg-gray-100 text-black p-6 overflow-y-auto fixed h-full top-16 left-0 z-10">
+                <aside className="w-64 bg-gray-100 text-black p-6 overflow-y-auto hidden lg:block fixed h-full top-16 left-0 z-10">
                     <nav>
                         <ul>
                             <li
@@ -216,7 +220,7 @@ const Seller = () => {
                         </ul>
                     </nav>
                 </aside>
-                <main className="flex-1 p-6 bg-gray-200 overflow-y-auto ml-64">
+                <main className="flex-1 p-6 bg-gray-200 overflow-y-auto lg:ml-64">
                     {renderContent()}
                 </main>
             </div>
@@ -345,6 +349,60 @@ const Seller = () => {
             >
                 <p>Are you sure you want to logout?</p>
             </Modal>
+
+            {/* Mobile Drawer */}
+            <Drawer
+                title="Navigation"
+                placement="left"
+                closable={true}
+                onClose={() => setDrawerVisible(false)}
+                visible={drawerVisible}
+            >
+                <nav>
+                    <ul>
+                        <li
+                            className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'dashboard' ? 'bg-gray-300' : ''}`}
+                            onClick={() => {
+                                setActiveTab('dashboard');
+                                setDrawerVisible(false);
+                            }}
+                        >
+                            <FaTachometerAlt className="mr-2" />
+                            Dashboard
+                        </li>
+                        <li
+                            className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'products' ? 'bg-gray-300' : ''}`}
+                            onClick={() => {
+                                setActiveTab('products');
+                                setDrawerVisible(false);
+                            }}
+                        >
+                            <FaThList className="mr-2" />
+                            Products
+                        </li>
+                        <li
+                            className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'orderHistory' ? 'bg-gray-300' : ''}`}
+                            onClick={() => {
+                                setActiveTab('orderHistory');
+                                setDrawerVisible(false);
+                            }}
+                        >
+                            <FaShoppingCart className="mr-2" />
+                            Order History
+                        </li>
+                        <li
+                            className={`cursor-pointer py-2 px-4 flex items-center rounded-lg ${activeTab === 'topSellingProducts' ? 'bg-gray-300' : ''}`}
+                            onClick={() => {
+                                setActiveTab('topSellingProducts');
+                                setDrawerVisible(false);
+                            }}
+                        >
+                            <FaThList className="mr-2" />
+                            Top Selling Products
+                        </li>
+                    </ul>
+                </nav>
+            </Drawer>
         </div>
     );
 };

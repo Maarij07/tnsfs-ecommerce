@@ -1,12 +1,12 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import img from '../assets/bg-blue.png';
 
 const CategoriesShow = ({ categories }) => {
-  const navigate = useNavigate();  // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleBrowseClick = () => {
-    navigate('/products');  // Redirect to /products
+    navigate('/products');
   };
 
   return (
@@ -24,7 +24,7 @@ const CategoriesShow = ({ categories }) => {
             >
               <h2 className='text-gray-800 text-xl font-bold mb-4'>{category.name}</h2>
               <button 
-                onClick={handleBrowseClick}  // Add onClick event
+                onClick={handleBrowseClick}
                 className='bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded-full font-semibold transition-colors duration-300'
               >
                 Browse
